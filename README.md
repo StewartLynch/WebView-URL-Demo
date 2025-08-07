@@ -1,6 +1,6 @@
 # WebKit - WebView(url: _) in os26
 
-![AppIcon128](Images/AppIcon128.png) This is the starter project for the video on WebKit - WebView(url: _) in os26
+![AppIcon128](Images/AppIcon128.png) This is the completed source code for the video on WebKit - WebView(url: _) in os26
 
 Release Date: September 28, 2025
 
