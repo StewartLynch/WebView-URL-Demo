@@ -1,0 +1,44 @@
+{
+  "fill" : {
+    "automatic-gradient" : "srgb:0.66046,0.86850,1.00000,1.00000"
+  },
+  "groups" : [
+    {
+      "blend-mode" : "normal",
+      "layers" : [
+        {
+          "blend-mode" : "overlay",
+          "glass" : true,
+          "hidden" : false,
+          "image-name" : "WebURLBitmoji.png",
+          "name" : "WebURLBitmoji",
+          "position" : {
+            "scale" : 2.12,
+            "translation-in-points" : [
+              52.9609375,
+              -5.9921875
+            ]
+          }
+        }
+      ],
+      "position" : {
+        "scale" : 1,
+        "translation-in-points" : [
+          -32.390625,
+          9.1875
+        ]
+      },
+      "shadow" : {
+        "kind" : "neutral",
+        "opacity" : 0.5
+      },
+      "translucency" : {
+        "enabled" : false,
+        "value" : 0.5
+      }
+    }
+  ],
+  "supported-platforms" : {
+    "squares" : "shared"
+  }
+}
