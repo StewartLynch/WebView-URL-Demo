@@ -21,6 +21,10 @@ import WebKit
 struct MyWebBrowserView: View {
     @State private var urlString = ""
     @State private var url: URL?
+    @State private var isReachable = false
+    @State private var showConfig = false
+    @State private var config = Config()
+    @Namespace private var configSpace
     var body: some View {
         NavigationStack {
             VStack {
@@ -35,11 +39,16 @@ struct MyWebBrowserView: View {
                     .autocapitalization(.none)
                     .keyboardType(.URL)
                     .onSubmit {
-                        url = URL(string: urlString)
+                        Task {
+                            await checkAvailability()
+                        }
                     }
                     if !urlString.isEmpty {
                         Button {
                             urlString = ""
+                            Task {
+                                await checkAvailability()
+                            }
                         } label: {
                             Image(systemName: "xmark.circle.fill")
                                 .foregroundStyle(.gray)
@@ -47,10 +56,47 @@ struct MyWebBrowserView: View {
                     }
                 }
                 .padding(.horizontal)
-                WebView(url: url)
-                    .ignoresSafeArea(edges: .bottom)
+                if isReachable {
+                    WebView(url: url)
+                        .ignoresSafeArea(edges: .bottom)
+                        .scrollBounceBehavior(.basedOnSize)
+                        .webViewBackForwardNavigationGestures(config.navActions ? .enabled : .disabled)
+                        .webViewMagnificationGestures(config.magnification ? .enabled : .disabled)
+                        .webViewLinkPreviews(config.linkPreviews ? .enabled : .disabled)
+                        .webViewTextSelection(config.textSelection)
+                } else {
+                    ContentUnavailableView("Enter a valid URL", systemImage: "link")
+                }
             }
             .navigationTitle("My Web Browser")
+            .task {
+                await checkAvailability()
+            }
+            .toolbar {
+                ToolbarItem(placement: .primaryAction) {
+                    Button("Configuration", systemImage: "gear") {
+                        showConfig.toggle()
+                    }
+                }
+                .matchedTransitionSource(id: "config", in: configSpace)
+            }
+            .sheet(isPresented: $showConfig) {
+                ConfigView(config: $config)
+                    .presentationDetents([.medium])
+                    .navigationTransition(.zoom(sourceID: "config", in: configSpace))
+            }
+        }
+    }
+    
+    func checkAvailability() async {
+        if !urlString.hasPrefix("https://") {
+            urlString = "https://".appending(urlString)
+        }
+        isReachable = await Reachability.checkURL(urlString)
+        if isReachable {
+            url = URL(string: urlString)
+        } else {
+            urlString = ""
         }
     }
 }
@@ -58,3 +104,21 @@ struct MyWebBrowserView: View {
     MyWebBrowserView()
 }
 
+struct WebViewTextSelectionModifier: ViewModifier {
+    let textSelection: Bool
+    func body(content: Content) -> some View {
+        if textSelection {
+            content
+                .webViewTextSelection(.enabled)
+        } else {
+            content
+                .webViewTextSelection(.disabled)
+        }
+    }
+}
+
+extension View {
+    func webViewTextSelection(_ textSelection: Bool) -> some View {
+        modifier(WebViewTextSelectionModifier(textSelection: textSelection))
+    }
+}
