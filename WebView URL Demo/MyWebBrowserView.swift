@@ -24,7 +24,6 @@ struct MyWebBrowserView: View {
             VStack {
                 // Display Web browser here
             }
-            .padding(.horizontal)
             .navigationTitle("My Web Browser")
         }
     }
