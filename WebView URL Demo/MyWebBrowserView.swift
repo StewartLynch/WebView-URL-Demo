@@ -16,13 +16,39 @@
 
 
 import SwiftUI
+import WebKit
 
 struct MyWebBrowserView: View {
-    
+    @State private var urlString = ""
+    @State private var url: URL?
     var body: some View {
         NavigationStack {
             VStack {
-                // Display Web browser here
+                HStack{
+                    TextField(text: $urlString) {
+                        Text("\(Image(systemName: "magnifyingglass")) Enter Web Site...")
+                    }
+                    .textFieldStyle(.roundedBorder)
+                    .padding()
+                    .submitLabel(.go)
+                    .autocorrectionDisabled()
+                    .autocapitalization(.none)
+                    .keyboardType(.URL)
+                    .onSubmit {
+                        url = URL(string: urlString)
+                    }
+                    if !urlString.isEmpty {
+                        Button {
+                            urlString = ""
+                        } label: {
+                            Image(systemName: "xmark.circle.fill")
+                                .foregroundStyle(.gray)
+                        }
+                    }
+                }
+                .padding(.horizontal)
+                WebView(url: url)
+                    .ignoresSafeArea(edges: .bottom)
             }
             .navigationTitle("My Web Browser")
         }
