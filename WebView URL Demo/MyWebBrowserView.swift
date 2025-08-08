@@ -24,7 +24,9 @@ struct MyWebBrowserView: View {
     @State private var isReachable = false
     @State private var showConfig = false
     @State private var config = Config()
+    @State private var scrollPosition = ScrollPosition()
     @Namespace private var configSpace
+    @State private var showScrollToTopButton = false
     var body: some View {
         NavigationStack {
             VStack {
@@ -64,6 +66,14 @@ struct MyWebBrowserView: View {
                         .webViewMagnificationGestures(config.magnification ? .enabled : .disabled)
                         .webViewLinkPreviews(config.linkPreviews ? .enabled : .disabled)
                         .webViewTextSelection(config.textSelection)
+                        .defaultScrollAnchor(.top)
+                        .webViewScrollPosition($scrollPosition)
+                        .webViewOnScrollGeometryChange(for: CGFloat.self) { geometry in
+                            geometry.contentOffset.y
+                        } action: { _, newValue in
+                            showScrollToTopButton = newValue > 0
+                        }
+
                 } else {
                     ContentUnavailableView("Enter a valid URL", systemImage: "link")
                 }
@@ -84,6 +94,20 @@ struct MyWebBrowserView: View {
                 ConfigView(config: $config)
                     .presentationDetents([.medium])
                     .navigationTransition(.zoom(sourceID: "config", in: configSpace))
+            }
+        }
+        .safeAreaInset(edge: .bottom, alignment: .trailing) {
+            if showScrollToTopButton {
+                Image(systemName: "arrow.up")
+                    .font(.system(size: 36))
+                    .frame(width: 60, height: 60)
+                    .glassEffect(.regular.interactive())
+                    .padding()
+                    .onTapGesture {
+                        withAnimation {
+                            scrollPosition.scrollTo(edge: .top)
+                        }
+                    }
             }
         }
     }
