@@ -121,6 +121,7 @@ struct MyWebBrowserView: View {
             url = URL(string: urlString)
         } else {
             urlString = ""
+            showScrollToTopButton = false
         }
     }
 }
