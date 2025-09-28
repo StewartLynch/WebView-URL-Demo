@@ -2,7 +2,9 @@
 
 ![AppIcon128](Images/AppIcon128.png) This is the completed source code for the video on WebKit - WebView(url: _) in os26
 
-Release Date: September 28, 2025
+<a href="http://www.youtube.com/watch?feature=player_embedded&v=YjsUS7-XtMs
+" target="_blank"><img src="http://img.youtube.com/vi/YjsUS7-XtMs/0.jpg" 
+alt="Web View (url)" width="480" height="360" border="1" /></a>
 
 If you want to support my work, you can - </br>
 
